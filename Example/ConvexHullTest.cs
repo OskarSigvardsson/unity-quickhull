@@ -6,8 +6,6 @@ using UnityEngine.UI;
 namespace GK {
 	public class ConvexHullTest : MonoBehaviour {
 
-		public Text DebugText;
-
 		IEnumerator Start() {
 			var calc = new ConvexHullCalculator();
 			var verts = new List<Vector3>();
@@ -30,16 +28,9 @@ namespace GK {
 
 				}
 
-				var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
 				calc.GenerateHull(points, true, ref verts, ref tris, ref normals);
 
-				stopwatch.Stop();
-
-				DebugText.text = stopwatch.Elapsed.TotalMilliseconds.ToString("n2");
-
 				mesh.Clear();
-
 				mesh.SetVertices(verts);
 				mesh.SetTriangles(tris, 0);
 				mesh.SetNormals(normals);
