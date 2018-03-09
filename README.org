@@ -1,0 +1,2 @@
+WIP version of a Unity implementation of the Quickhull algorithm for
+generating 3D convex hulls.
