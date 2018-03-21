@@ -778,7 +778,7 @@ namespace GK {
 							points[face.Vertex0],
 							face);
 
-						if (dist > 0.0f) {
+						if (dist > EPSILON) {
 							assigned = true;
 
 							fp.Face = fi;
@@ -790,7 +790,7 @@ namespace GK {
 					}
 
 					if (!assigned) {
-						// If points hasn't been assigned, then it's
+						// If point hasn't been assigned, then it's
 						// inside the convex hull. Swap it with
 						// openSetTail, and decrement openSetTail. We
 						// also have to decrement i, because there's
