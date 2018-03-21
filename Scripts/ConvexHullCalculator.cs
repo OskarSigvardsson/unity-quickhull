@@ -345,6 +345,11 @@ namespace GK {
 			// imagine that even with a tiny seed hull, it would grow
 			// pretty quickly. Anyway, the rest should be the same,
 			// you only need to change how you find b0/b1/b2/b3
+
+			// TODO i'm a bit worried what happens if these points are
+			// too close to each other or if the fourth point is
+			// coplanar with the triangle. I should loop through the
+			// point set to find suitable points instead.
 			var b0 = 0;
 			var b1 = 1;
 			var b2 = 2;
