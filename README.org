@@ -1,2 +1,20 @@
-WIP version of a Unity implementation of the Quickhull algorithm for
-generating 3D convex hulls.
+A Unity implementation of the Quickhull algorithm for generating 3D
+convex hulls.
+
+The only file that matters is ConvexHullCalculator.cs in the Scripts
+folder. It defines a class called ConvexHullCalculator that can
+calculate 3D convex hulls from a point cloud containing at least 4
+points. It returns lists of vertices, triangles and normals suitable
+to be directly converted into a Mesh (see example). 
+
+If there are less than 4 points, or if all points are coplanar, the
+calculator will throw an exception, as 3D convex hulls aren't really
+defined in those cases.
+
+The class uses a number of internal buffers for doing the calculation,
+but they are all reused for subsequent calculations in order to avoid
+generating garbage.
+
+You can run the calculator on background threads without issue, but
+the same calculator cannot be shared by multiple threads. If you want
+to parallelize hull generation, use one calculator per thread. 
