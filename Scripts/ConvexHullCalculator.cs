@@ -7,8 +7,8 @@ using UnityEngine;
 
 namespace GK {
 	/// <summary>
-	///   A not very optimized implementation of the quickhull algorithm
-	///   for generating 3d convex hulls.
+	///   An implementation of the quickhull algorithm for generating
+	///   3d convex hulls.
 	///
 	///   The algorithm works like this: you start with an initial
 	///   "seed" hull, that is just a simple tetrahedron made up of
@@ -54,8 +54,8 @@ namespace GK {
 	///   the cone of new faces.
 	///
 	///   There are a number of things you could possibly optimize in
-	///   this version of the algorithm, but this is correct and
-	///   reasonably fast. Fast enough for my purposes, anyway.
+	///   this version of the algorithm, but this should be correct
+	///   and reasonably fast.
 	///
 	///   A note: the code uses a right-handed coordinate system, where
 	///   the cross-product uses the right-hand rule and the faces are
@@ -81,7 +81,7 @@ namespace GK {
 		const int INSIDE = -1;
 
 		/// <summary>
-		///   Epsilon value.
+		///   Epsilon value. 
 		/// </summary>
 		const float EPSILON = 0.0001f;
 
@@ -98,8 +98,6 @@ namespace GK {
 		///   Vertex2 and Vertex1), etc.
 		///
 		///   Normal is (unsurprisingly) the normal of the triangle.
-		///
-		///   TODO: SOA instead of AOS?
 		/// </summary>
 		struct Face {
 			public int Vertex0;
@@ -138,7 +136,7 @@ namespace GK {
 		///   face. These are used in the openSet array.
 		///
 		///   Point is the index of the point in the points array,
-		///   Face is the key of the face in the Key dictioanry,
+		///   Face is the key of the face in the Key dictionary,
 		///   Distance is the distance from the face to the point.
 		/// </summary>
 		struct PointFace {
@@ -188,8 +186,7 @@ namespace GK {
 		///   the Faces EVER created in the algorithm, and skip the
 		///   ones that have been marked as deleted. However, looping
 		///   through a list is fairly fast, and it might be worth it
-		///   to avoid Dictionary overhead. I should probably test and
-		///   profile both ways.
+		///   to avoid Dictionary overhead.
 		///
 		///   TODO test converting to a List<Face> instead.
 		/// </summary>
@@ -333,34 +330,21 @@ namespace GK {
 
 		/// <summary>
 		///   Create initial seed hull.
-		///
-		///   The good way to do this is probably to find the extreme
-		///   points and create the seed hull from those, but I'm just
-		///   using the four first points for it, for now. Obviously
-		///   it can be optimized :)
 		/// </summary>
 		void GenerateInitialHull(List<Vector3> points) {
-			// TODO use extreme points to generate seed hull. I wonder
-			// how much difference that actually makes, you would
-			// imagine that even with a tiny seed hull, it would grow
-			// pretty quickly. Anyway, the rest should be the same,
-			// you only need to change how you find b0/b1/b2/b3
-
-			// TODO i'm a bit worried what happens if these points are
-			// too close to each other or if the fourth point is
-			// coplanar with the triangle. I should loop through the
-			// point set to find suitable points instead.
-			var b0 = 0;
-			var b1 = 1;
-			var b2 = 2;
-			var b3 = 3;
+			// Find points suitable for use as the seed hull. Some
+			// varieties of this algorithm pick extreme points here,
+			// but I'm not convinced you gain all that much from that.
+			// Currently what it does is just find the first four
+			// points that are not coplanar. 
+			int b0, b1, b2, b3;
+			FindInitialHullIndices(points, out b0, out b1, out b2, out b3);
 
 			var v0 = points[b0];
 			var v1 = points[b1];
 			var v2 = points[b2];
 			var v3 = points[b3];
 
-			// TODO use epsilon?
 			var above = Dot(v3 - v1, Cross(v1 - v0, v2 - v0)) > 0.0f;
 
 			// Create the faces of the seed hull. You need to draw a
@@ -466,6 +450,43 @@ namespace GK {
 			}
 
 			VerifyOpenSet(points);
+		}
+
+		/// <summary>
+		///   Find four points in the point cloud that are not
+		///   coplanar for the seed hull
+		/// </summary>
+		void FindInitialHullIndices(List<Vector3> points, out int b0, out int b1, out int b2, out int b3) {
+			var count = points.Count;
+
+			for (int i0 = 0; i0 < count - 3; i0++) {
+				for (int i1 = i0 + 1; i1 < count - 2; i1++) {
+					var p0 = points[i0];
+					var p1 = points[i1];
+
+					if (AreCoincident(p0, p1)) continue;
+					
+					for (int i2 = i1 + 1; i2 < count - 1; i2++) {
+						var p2 = points[i2];
+
+						if (AreCollinear(p0, p1, p2)) continue;
+
+						for (int i3 = i2 + 1; i3 < count - 0; i3++) {
+							var p3 = points[i3];
+
+							if(AreCoplanar(p0, p1, p2, p3)) continue;
+
+							b0 = i0;
+							b1 = i1;
+							b2 = i2;
+							b3 = i3;
+							return;
+						}
+					}
+				}
+			}
+
+			throw new System.ArgumentException("Can't generate hull, points are coplanar");
 		}
 
 		/// <summary>
@@ -923,6 +944,32 @@ namespace GK {
 				a.x*b.y - a.y*b.x);
 		}
 
+		/// <summary>
+		///   Check if two points are coincident
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		bool AreCoincident(Vector3 a, Vector3 b) {
+			return (a - b).magnitude <= EPSILON;
+		}
+
+		/// <summary>
+		///   Check if three points are collinear
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		bool AreCollinear(Vector3 a, Vector3 b, Vector3 c) {
+			return Cross(c - a, c - b).magnitude <= EPSILON;
+		}
+
+		/// <summary>
+		///   Check if four points are coplanar
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		bool AreCoplanar(Vector3 a, Vector3 b, Vector3 c, Vector3 d) {
+			var n1 = Cross(c - a, c - b);
+			var n2 = Cross(d - a, d - b);
+
+			return AreCollinear(Vector3.zero, n1, n2);
+		}
 
 		/// <summary>
 		///   Method used for debugging, verifies that the openSet is
