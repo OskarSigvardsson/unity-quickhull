@@ -270,6 +270,9 @@ namespace GK {
 			ref List<int> tris,
 			ref List<Vector3> normals)
 		{
+			if (points.Count < 4) {
+				throw new System.ArgumentException("Need at least 4 points to generate a convex hull");
+			}
 
 			Initialize(points, splitVerts);
 
