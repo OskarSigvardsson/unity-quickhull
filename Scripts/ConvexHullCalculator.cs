@@ -934,10 +934,17 @@ namespace GK {
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		bool AreCoplanar(Vector3 a, Vector3 b, Vector3 c, Vector3 d) {
-			var n1 = Cross(c - a, c - b).normalized;
-			var n2 = Cross(d - a, d - b).normalized;
+			var n1 = Cross(c - a, c - b);
+			var n2 = Cross(d - a, d - b);
 
-			return AreCollinear(Vector3.zero, n1, n2);
+			var m1 = n1.magnitude;
+			var m2 = n2.magnitude;
+
+			return m1 > EPSILON
+				&& m2 > EPSILON
+				&& AreCollinear(Vector3.zero,
+					(1.0f / m1) * n1,
+					(1.0f / m2) * n2);
 		}
 
 		/// <summary>
