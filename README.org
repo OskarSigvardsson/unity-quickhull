@@ -1,20 +1,42 @@
-A Unity implementation of the Quickhull algorithm for generating 3D
-convex hulls.
+* Quickhull for Unity
+This repository contains an implementation of the Quickhull algorithm for
+generating 3d convex hulls from point clouds, written for Unity. A convex hull
+is the smallest convex shape that contains a given set of points (basically: if
+you have a bunch of points in space, the convex hull is what you'd get if you
+"shrinkwrapped" as tightly as possible). 
 
-The only file that matters is ConvexHullCalculator.cs in the Scripts
-folder. It defines a class called ConvexHullCalculator that can
-calculate 3D convex hulls from a point cloud containing at least 4
-points. It returns lists of vertices, triangles and normals suitable
-to be directly converted into a Mesh (see example). 
+** Demo
+Convex hulls are useful in a variety of algorithms in graphics and gamedev. The
+simplest of which is maybe as a low-poly "rock generator", which is included in
+the project. 
 
-If there are less than 4 points, or if all points are coplanar, the
-calculator will throw an exception, as 3D convex hulls aren't really
-defined in those cases.
+[[https://giant.gfycat.com/MistyBoldDromedary.gif]]
 
-The class uses a number of internal buffers for doing the calculation,
-but they are all reused for subsequent calculations in order to avoid
-generating garbage.
+[[https://youtu.be/mPNzpP9UwKo][YouTube link]]
 
-You can run the calculator on background threads without issue, but
-the same calculator cannot be shared by multiple threads. If you want
-to parallelize hull generation, use one calculator per thread. 
+The way this works is pretty simple: just generate a bunch of random points, use
+the ConvexHullCalculator to calculate convex hulls for them which is used to
+create meshes. 
+
+** Usage
+The only file that really matters is ConvexHullCalculator.cs in the Scripts
+folder. It defines a class called ConvexHullCalculator that can calculate 3d
+convex hulls from a point cloud containing at least 4 points. It returns lists
+of vertices, triangles and normals that can be directly converted into a mesh
+(see example for how to do this).
+
+If there are less than 4 points, or if all points are coplanar, the calculator
+will throw an exception, as 3d convex hulls aren't really defined in those
+cases.
+
+The class uses a number of internal buffers for doing the calculation, but they
+are all reused for subsequent calculations in order to avoid generating garbage.
+You can see in the example that the same ConvexHullCalculator (as well as the
+List<T>'s used to store the results) can be reused many times so you can avoid
+generating garbage. 
+
+The calculator itself doesn't interact at all with the Unity engine, so it's
+perfectly safe to run the calculations on background threads. However, the
+calculator is not thread-safe, so a single calculator cannot be used at the same
+time by two or more threads. If you wish to run multiple calculations in
+parallel, use one calculator per thread. 
