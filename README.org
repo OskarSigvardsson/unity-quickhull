@@ -5,7 +5,11 @@ is the smallest convex shape that contains a given set of points (basically: if
 you have a bunch of points in space, the convex hull is what you'd get if you
 "shrinkwrapped" as tightly as possible). 
 
-The code should be pretty stable, and 
+The code should be pretty stable and I've gone to some length to document and
+comment in the source file, so it should be pretty readable. It should be well
+suitable for use in production. 
+
+Let me know if you find a use for this, I would love to hear about it!
 
 ** Demo
 Convex hulls are useful in a variety of algorithms in graphics and gamedev. The
