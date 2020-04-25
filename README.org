@@ -5,6 +5,8 @@ is the smallest convex shape that contains a given set of points (basically: if
 you have a bunch of points in space, the convex hull is what you'd get if you
 "shrinkwrapped" as tightly as possible). 
 
+The code should be pretty stable, and 
+
 ** Demo
 Convex hulls are useful in a variety of algorithms in graphics and gamedev. The
 simplest of which is maybe as a low-poly "rock generator", which is included in
@@ -20,10 +22,13 @@ create meshes.
 
 ** Usage
 The only file that really matters is ConvexHullCalculator.cs in the Scripts
-folder. It defines a class called ConvexHullCalculator that can calculate 3d
-convex hulls from a point cloud containing at least 4 points. It returns lists
-of vertices, triangles and normals that can be directly converted into a mesh
-(see example for how to do this).
+folder. You can either just copy that file into your project, or add the
+repository into a Plugins folder. 
+
+ConvexHullCalculator.cs defines a class called ConvexHullCalculator that can
+calculate 3d convex hulls from a point cloud containing at least 4 points. It
+returns lists of vertices, triangles and normals that can be directly converted
+into a mesh (see example for how to do this).
 
 If there are less than 4 points, or if all points are coplanar, the calculator
 will throw an exception, as 3d convex hulls aren't really defined in those
