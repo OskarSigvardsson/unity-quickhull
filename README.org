@@ -3,11 +3,10 @@ This repository contains an implementation of the Quickhull algorithm for
 generating 3d convex hulls from point clouds, written for Unity. A convex hull
 is the smallest convex shape that contains a given set of points (basically: if
 you have a bunch of points in space, the convex hull is what you'd get if you
-"shrinkwrapped" as tightly as possible). 
+"shrinkwrapped" the points as tightly as possible). 
 
-The code should be pretty stable and I've gone to some length to document and
-comment in the source file, so it should be pretty readable. It should be well
-suitable for use in production. 
+The code is commented and documented in the source file, and it should be pretty
+readable. It is suitable for use in production. 
 
 Let me know if you find a use for this, I would love to hear about it!
 
@@ -20,14 +19,14 @@ the project.
 
 [[https://youtu.be/mPNzpP9UwKo][YouTube link]]
 
-The way this works is pretty simple: just generate a bunch of random points, use
-the ConvexHullCalculator to calculate convex hulls for them which is used to
-create meshes. 
+The way this works is pretty simple: just generate a bunch of random points in
+the unit sphere, use the ConvexHullCalculator to calculate convex hulls for them
+which is used to create meshes.
 
 ** Usage
 The only file that really matters is ConvexHullCalculator.cs in the Scripts
 folder. You can either just copy that file into your project, or add the
-repository into a Plugins folder. 
+repository into a Plugins folder.
 
 ConvexHullCalculator.cs defines a class called ConvexHullCalculator that can
 calculate 3d convex hulls from a point cloud containing at least 4 points. It
@@ -48,4 +47,6 @@ The calculator itself doesn't interact at all with the Unity engine, so it's
 perfectly safe to run the calculations on background threads. However, the
 calculator is not thread-safe, so a single calculator cannot be used at the same
 time by two or more threads. If you wish to run multiple calculations in
-parallel, use one calculator per thread. 
+parallel, use one calculator per thread. Note also that the calculator is
+entirely serial, which means that a single calculator will max out at most one
+logical core. 
