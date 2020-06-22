@@ -15,7 +15,7 @@ Convex hulls are useful in a variety of algorithms in graphics and gamedev. The
 simplest of which is maybe as a low-poly "rock generator", which is included in
 the project. 
 
-[[https://giant.gfycat.com/MistyBoldDromedary.gif]]
+[[./demo.gif]]
 
 [[https://youtu.be/mPNzpP9UwKo][YouTube link]]
 
