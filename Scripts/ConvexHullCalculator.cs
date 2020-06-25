@@ -962,9 +962,9 @@ namespace GK {
 			var m1 = n1.magnitude;
 			var m2 = n2.magnitude;
 
-			return m1 > EPSILON
-				&& m2 > EPSILON
-				&& AreCollinear(Vector3.zero,
+			return m1 <= EPSILON
+				|| m2 <= EPSILON
+				|| AreCollinear(Vector3.zero,
 					(1.0f / m1) * n1,
 					(1.0f / m2) * n2);
 		}
