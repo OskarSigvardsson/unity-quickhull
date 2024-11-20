@@ -831,9 +831,6 @@ namespace GK {
 		/// <summary>
 		///   Final step in algorithm, export the faces of the convex hull in a
 		///   mesh-friendly format.
-		///
-		///   TODO normals calculation for non-split vertices. Right now it just
-		///   leaves the normal array empty.
 		/// </summary>
 		void ExportMesh(
 			List<Vector3> points,
@@ -894,6 +891,26 @@ namespace GK {
 				tris.Add(vi0);
 				tris.Add(vi1);
 				tris.Add(vi2);
+			}
+
+			if (splitVerts)
+				return;
+
+			for (int i = 0; i < verts.Count; i++)
+			{
+				normals.Add(Vector3.zero);
+			}
+
+			foreach (var face in faces.Values)
+			{
+				normals[hullVerts[face.Vertex0]] += face.Normal;
+				normals[hullVerts[face.Vertex1]] += face.Normal;
+				normals[hullVerts[face.Vertex2]] += face.Normal;
+			}
+
+			for (int i = 0; i < normals.Count; i++)
+			{
+				normals[i] = normals[i].normalized;
 			}
 		}
 
